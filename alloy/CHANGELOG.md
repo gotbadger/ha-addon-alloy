@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1 - 2026-10-04
+
+### Fixed
+- 1.3.0 used the promtail-era `stage.labelallow`, which does not exist in Alloy and
+  prevented the pipeline from starting. Replaced with Alloy's `stage.label_keep`
+  (same semantics).
+
 ## 1.3.0 - 2026-10-04
 
 ### Fixed

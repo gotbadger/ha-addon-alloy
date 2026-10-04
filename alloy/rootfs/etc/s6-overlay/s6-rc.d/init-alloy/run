@@ -107,7 +107,7 @@ loki.process "journal" {
   }
 
   // Enforce the approved label set
-  stage.labelallow {
+  stage.label_keep {
     values = ["job", "hostname", "unit", "container_name", "service_name", "syslog_identifier", "transport", "level"]
   }
 
