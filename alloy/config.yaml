@@ -1,11 +1,11 @@
 name: Grafana Alloy
-version: "1.2.0"
+version: "1.2.1"
 slug: alloy
 description: >-
   Ship Home Assistant logs to Loki using Grafana Alloy.
   Replacement for the deprecated Promtail add-on.
   Reads systemd journal and forwards to a remote Loki instance.
-url: https://github.com/ecohash-co/ha-addon-alloy
+url: https://github.com/gotbadger/ha-addon-alloy
 codeowners:
   - "@ecohash-co"
 arch:

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1 - 2026-10-04
+
+### Changed
+- Moved `build_from` parameters from deprecated `build.yaml` into the Dockerfile (`ARG BUILD_FROM` default)
+- `io.hass.url` now points at this fork
+
 ## 1.2.0 - 2026-10-04
 
 ### Added

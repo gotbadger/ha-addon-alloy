@@ -1,4 +1,4 @@
-ARG BUILD_FROM
+ARG BUILD_FROM="ghcr.io/home-assistant/base-debian:bookworm"
 FROM ${BUILD_FROM}
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
