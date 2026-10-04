@@ -13,6 +13,7 @@ This add-on replaces the deprecated Promtail add-on, which is incompatible with 
 ### Optional
 
 - **log_level**: Alloy log verbosity (`debug`, `info`, `warn`, `error`). Default: `info`
+- **disable_reporting**: Pass `--disable-reporting` to Alloy so it does not send anonymous usage statistics to `stats.grafana.com`. Default: `true` (telemetry disabled). Set to `false` to opt back in.
 - **additional_config**: Extra Alloy config blocks to append (advanced users)
 
 ## Labels

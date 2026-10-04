@@ -10,6 +10,7 @@ mkdir -p "${CONFIG_DIR}" /data/alloy
 # Read options
 LOKI_URL=$(jq -r '.loki_url' "${OPTIONS_FILE}")
 LOG_LEVEL=$(jq -r '.log_level // "info"' "${OPTIONS_FILE}")
+DISABLE_REPORTING=$(jq -r '.disable_reporting // true' "${OPTIONS_FILE}")
 ADDITIONAL_CONFIG=$(jq -r '.additional_config // ""' "${OPTIONS_FILE}")
 
 # Detect journal path
@@ -23,6 +24,7 @@ echo " Grafana Alloy for Home Assistant"
 echo " Loki URL: ${LOKI_URL}"
 echo " Journal path: ${JOURNAL_PATH}"
 echo " Log level: ${LOG_LEVEL}"
+echo " Disable reporting: ${DISABLE_REPORTING}"
 echo "-----------------------------------------------------------"
 
 # Generate Alloy config
