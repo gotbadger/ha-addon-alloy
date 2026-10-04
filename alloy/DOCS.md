@@ -18,7 +18,8 @@ This add-on replaces the deprecated Promtail add-on, which is incompatible with 
 
 ## Labels
 
-All journal entries are shipped to Loki with these labels:
+All journal entries are shipped to Loki with exactly these labels
+(enforced via `stage.labelallow`):
 
 | Label | Source |
 |-------|--------|
@@ -28,7 +29,16 @@ All journal entries are shipped to Loki with these labels:
 | `syslog_identifier` | process identifier |
 | `transport` | journal transport type |
 | `container_name` | Docker container name (for add-ons) |
-| `level` | log priority (debug, info, warning, error, etc.) |
+| `service_name` | service name (auto-detected) |
+| `level` | parsed from the log line text, one of `debug`, `info`, `warn`, `error`, `critical` |
+
+The `level` label is extracted from Home Assistant's log format
+(`YYYY-MM-DD HH:MM:SS.mmm LEVEL (thread) [logger] message`) after ANSI colour
+codes are stripped, then lowercased (`WARNING` becomes `warn`). Journal PRIORITY
+is deliberately not used for container output: Docker tags the entire stderr
+stream as `err`, which would mislabel every HA line as `error`. Lines that do
+not match the HA timestamp format (kernel, journald internals, multi-line
+traceback continuations) fall back to `info`.
 
 ## Debug UI
 
@@ -53,4 +63,4 @@ Note: This is injected as-is into the config file. Syntax errors will prevent Al
 
 ## Support
 
-Report issues at: https://github.com/ecohash-co/ha-addon-alloy/issues
+Report issues at: https://github.com/gotbadger/ha-addon-alloy/issues

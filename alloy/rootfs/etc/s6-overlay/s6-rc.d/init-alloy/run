@@ -70,16 +70,45 @@ loki.relabel "journal" {
     source_labels = ["__journal_container_name"]
     target_label  = "container_name"
   }
-  rule {
-    source_labels = ["__journal_priority_keyword"]
-    target_label  = "level"
-  }
 }
 
 // --- Process journal logs ---
 loki.process "journal" {
   stage.drop {
     expression = "^\\\\s*$"
+  }
+
+  // Strip ANSI colour codes so level parsing sees clean text
+  stage.decolorize {}
+
+  // Extract the level from HA log format:
+  // 2026-10-04 14:52:46.929 DEBUG (MainThread) [zigpy.application] ...
+  // Journal PRIORITY is unreliable for container stdout (docker tags the
+  // whole stderr stream as err), so the text-derived level is authoritative.
+  stage.regex {
+    expression = "^\\\\d{4}-\\\\d{2}-\\\\d{2} \\\\d{2}:\\\\d{2}:\\\\d{2}\\\\.\\\\d{3} (?P<level>DEBUG|INFO|WARNING|ERROR|CRITICAL) "
+  }
+
+  // Lowercase the level; fall back to info for non-HA lines (kernel, journald, etc.)
+  stage.template {
+    source   = "level"
+    template = "{{ if .Value }}{{ ToLower .Value }}{{ else }}info{{ end }}"
+  }
+
+  // Normalise HA's WARNING to Loki's canonical warn
+  stage.replace {
+    source     = "level"
+    expression = "^warning$"
+    replace    = "warn"
+  }
+
+  stage.labels {
+    values = { level = "" }
+  }
+
+  // Enforce the approved label set
+  stage.labelallow {
+    values = ["job", "hostname", "unit", "container_name", "service_name", "syslog_identifier", "transport", "level"]
   }
 
   forward_to = [loki.write.loki.receiver]

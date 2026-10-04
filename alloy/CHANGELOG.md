@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.3.0 - 2026-10-04
+
+### Fixed
+- `level` label was derived from journald PRIORITY, which for container output is
+  meaningless (docker tags the whole stderr stream as `err`), so every Home Assistant
+  Core line was labeled `error` regardless of its actual level. The level is now parsed
+  from the HA log line itself (`YYYY-MM-DD HH:MM:SS.mmm LEVEL (thread) [logger] msg`),
+  lowercased, and `WARNING` is normalised to `warn`. Lines without the HA timestamp
+  prefix (kernel, journald internals, tracebacks) fall back to `info`.
+
+### Added
+- `stage.decolorize` — ANSI colour escape sequences are stripped before parsing and
+  are no longer stored in Loki.
+- `stage.labelallow` — enforces the approved label set: `job`, `hostname`, `unit`,
+  `container_name`, `service_name`, `syslog_identifier`, `transport`, `level`.
+
 ## 1.2.1 - 2026-10-04
 
 ### Changed
