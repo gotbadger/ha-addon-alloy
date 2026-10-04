@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.2 - 2026-10-04
+
+### Fixed
+- `WARNING` lines were labeled `warning`, not `warn`: `stage.replace` with a
+  `source` argument does not rewrite the extracted value in Alloy 1.20.x
+  (verified empirically). Normalisation moved into the `stage.template` step.
+  Verified in a sandbox: `debug`, `info`, `warn`, `error`, `critical` all produced correctly.
+
 ## 1.3.1 - 2026-10-04
 
 ### Fixed

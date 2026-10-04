@@ -89,17 +89,13 @@ loki.process "journal" {
     expression = "^\\\\d{4}-\\\\d{2}-\\\\d{2} \\\\d{2}:\\\\d{2}:\\\\d{2}\\\\.\\\\d{3} (?P<level>DEBUG|INFO|WARNING|ERROR|CRITICAL) "
   }
 
-  // Lowercase the level; fall back to info for non-HA lines (kernel, journald, etc.)
+  // Lowercase the level, normalise WARNING to warn, and fall back to info
+  // for non-HA lines (kernel, journald internals, tracebacks).
+  // (normalisation is done here because stage.replace with source does not
+  // rewrite the extracted value in Alloy 1.20.x — verified empirically)
   stage.template {
     source   = "level"
-    template = "{{ if .Value }}{{ ToLower .Value }}{{ else }}info{{ end }}"
-  }
-
-  // Normalise HA's WARNING to Loki's canonical warn
-  stage.replace {
-    source     = "level"
-    expression = "^warning$"
-    replace    = "warn"
+    template = "{{ if .Value }}{{ if eq (ToLower .Value) \"warning\" }}warn{{ else }}{{ ToLower .Value }}{{ end }}{{ else }}info{{ end }}"
   }
 
   stage.labels {
