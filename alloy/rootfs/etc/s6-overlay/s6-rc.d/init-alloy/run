@@ -78,6 +78,20 @@ loki.process "journal" {
     expression = "^\\\\s*$"
   }
 
+  // Drop mosquitto ACL-check noise: the broker logs an identical cosmetic
+  // error line for every acl check on internal probes (~12/s, ~93% of
+  // journal volume). Broker is healthy; connections/auth still get through.
+  // Drops are counted in loki_process_dropped_lines_total{reason=...}.
+  // Note: stage.drop has no sampling (no drop_counter); we drop all lines.
+  stage.match {
+    selector = "{container_name=\"app_core_mosquitto\"}"
+
+    stage.drop {
+      expression         = "received null username, clientid or topic"
+      drop_counter_reason = "mosquitto_acl_noise"
+    }
+  }
+
   // Strip ANSI colour codes so level parsing sees clean text
   stage.decolorize {}
 

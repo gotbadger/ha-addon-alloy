@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.3 - 2026-10-05
+
+### Added
+- `stage.match` + `stage.drop` for the mosquitto ACL-check noise line
+  (`received null username, clientid or topic, or access is equal or less than 0
+  for acl check`): an identical cosmetic broker-internal error repeated
+  ~12/s (~93% of total journal volume). All matching lines are dropped
+  (Alloy `stage.drop` has no 1-in-N sampling); the drop count is visible in
+  `loki_process_dropped_lines_total{reason="mosquitto_acl_noise"}` on the
+  debug UI metrics endpoint. Connections, auth, keepalive and disconnect
+  lines are untouched.
+
 ## 1.3.2 - 2026-10-04
 
 ### Fixed
